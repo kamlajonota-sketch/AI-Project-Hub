@@ -70,6 +70,15 @@ function renderNav(){
  const builtIn=['AI Assistants','AI Models','AI Systems','AI & Models','Research','Developer Tools','GitHub Projects','Design & Media','Productivity','Learning'];
  const cats=[...new Set([...builtIn,...customCategories,...tools.map(t=>t.category).filter(Boolean)])].sort((a,b)=>a.localeCompare(b));
  nav.innerHTML='<div class="side-title">Workspace</div><button type="button" class="nav '+(active==='All'?'active':'')+'" data-category="All">◈ All tools <span class="count">'+tools.length+'</span></button><button type="button" class="nav '+(active==='Favorites'?'active':'')+'" data-category="Favorites">☆ Favorites <span class="count">'+tools.filter(t=>t.favorite).length+'</span></button><div class="side-title">Categories</div>'+cats.map(c=>'<button type="button" class="nav '+(active===c?'active':'')+'" data-category="'+esc(c)+'">◦ '+esc(c)+' <span class="count">'+categoryCount(c)+'</span></button>').join('');
+ // Bind the workspace menu directly every time its buttons are rebuilt.
+ // This avoids relying on a document-level delegated handler for dynamically replaced navigation.
+ nav.onclick=function(e){
+  const button=e.target.closest('button[data-category]');
+  if(!button||!nav.contains(button))return;
+  e.preventDefault();
+  active=button.getAttribute('data-category')||'All';
+  render();
+ };
 }
 function render(){
  if(light){document.body.style.setProperty('--bg','#f1f4fb');document.body.style.setProperty('--panel','#fff');document.body.style.setProperty('--line','#d8deeb');document.body.style.setProperty('--text','#172033');document.body.style.setProperty('--muted','#66738a');document.body.style.background='radial-gradient(ellipse at 12% 0%,#d9d4ff,transparent 38%),#f1f4fb';document.querySelectorAll('.tool,.sidebox,.search input,.select,.modal').forEach(e=>{e.style.background='#fff';e.style.color='#172033';});}else{['--bg','--line','--text','--muted'].forEach(k=>document.body.style.removeProperty(k));document.body.style.background='radial-gradient(ellipse at 12% 0%,#30245b55,transparent 38%),radial-gradient(ellipse at 95% 15%,#0d716b22,transparent 32%),var(--bg)';document.querySelectorAll('.tool,.sidebox,.search input,.select,.modal').forEach(e=>{e.style.removeProperty('background');e.style.removeProperty('color');});}
@@ -82,8 +91,6 @@ function render(){
  /* Card actions use delegated events below so rerendered cards always respond. */
 }
 document.addEventListener('click',e=>{
- const categoryButton=e.target.closest('#categoryNav [data-category]');
- if(categoryButton){e.preventDefault();active=categoryButton.dataset.category||'All';render();return;}
  const actionButton=e.target.closest('#toolGrid [data-act]');
  if(actionButton){e.preventDefault();e.stopPropagation();act(actionButton.dataset.act,actionButton.dataset.id);}
 },true);
