@@ -14,6 +14,7 @@ body.light{background:radial-gradient(ellipse at 12% 0%,#d9d4ff,transparent 38%)
 .light .tool{border-color:#d8deeb}.light .tool p,.light .hero p{color:#52607a}.light .hero{background:linear-gradient(115deg,#e9e5ff,#dff6f2);border-color:#cfc9f5}
 .light .nav{color:#44526b}.light .nav:hover,.light .nav.active{background:#e6e2ff;color:#172033}.light .btn.primary{color:#fff}.light .btn.ghost{background:transparent}
 .light .modal-backdrop{background:#dfe4f0d9}.light .toast{background:#172033}
+.cat-row{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid #28344a}.cat-name{flex:1;min-width:0;overflow-wrap:anywhere}.cat-count{font-size:11px;color:#7f8da8;margin-right:4px}.cat-input{flex:1;min-width:0;background:#0a1220;color:var(--text);border:1px solid var(--accent);border-radius:10px;padding:8px 10px;outline:none}.cat-btn{padding:7px 11px;font-size:12px}.light .cat-row{border-color:#d8deeb}.light .cat-input{background:#fff;color:#172033}.actions .btn#renameActive{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -21,11 +22,11 @@ body.light{background:radial-gradient(ellipse at 12% 0%,#d9d4ff,transparent 38%)
 <header class="top"><div class="brand"><div class="logo">✦</div><div><h1>AI Project Hub</h1><p>Your personal launchpad for the digital world</p></div></div><div class="actions"><button class="btn ghost" id="exportBtn" title="Export your personal tools">↥ Backup</button><button class="btn ghost" id="importBtn">↧ Import</button><button class="btn primary" id="addBtn">＋ Add tool</button><input type="file" id="importFile" accept="application/json,.json" hidden></div></header>
 <section class="hero"><div><div class="eyebrow">✦ One hub. Your workflow.</div><h2>Everything you use.<br>One click away.</h2><p>Keep your favorite AI assistants, developer tools, GitHub projects and useful websites organized in one beautiful dashboard.</p><div class="stats"><div class="stat"><strong id="toolCount">0</strong><span>Tools in your hub</span></div><div class="stat"><strong id="favoriteCount">0</strong><span>Favorites</span></div><div class="stat"><strong id="categoryCount">0</strong><span>Categories</span></div></div></div><div class="hero-art" aria-hidden="true">✧</div></section>
 <div class="toolbar"><div class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search tools, categories, descriptions…" autocomplete="off" aria-label="Search tools"></div><select id="sortSelect" class="select" aria-label="Sort tools"><option value="default">Sort: Recommended</option><option value="az">Name: A–Z</option><option value="za">Name: Z–A</option><option value="favorites">Favorites first</option></select><button class="btn" id="themeBtn" title="Toggle appearance">☼ Appearance</button></div>
-<div class="layout"><aside class="sidebar"><div class="sidebox" id="categoryNav"><div class="side-title">Workspace</div><button class="nav active" data-category="All">◈ All tools <span class="count" id="allCount"></span></button><button class="nav" data-category="Favorites">☆ Favorites <span class="count" id="favNavCount"></span></button><div class="side-title">Categories</div></div><p class="note">Your changes are saved in this browser only. Export a backup to move your setup to another device.</p></aside><main class="content"><div class="section-head"><div><h2 id="sectionTitle">All tools</h2><p id="sectionSubtitle">Your digital workspace, ready when you are.</p></div><button class="btn" id="manageCategories">＋ Category</button></div><div class="grid" id="toolGrid"></div></main></div>
+<div class="layout"><aside class="sidebar"><div class="sidebox" id="categoryNav"><div class="side-title">Workspace</div><button class="nav active" data-category="All">◈ All tools <span class="count" id="allCount"></span></button><button class="nav" data-category="Favorites">☆ Favorites <span class="count" id="favNavCount"></span></button><div class="side-title">Categories</div></div><p class="note">Your changes are saved in this browser only. Export a backup to move your setup to another device.</p></aside><main class="content"><div class="section-head"><div><h2 id="sectionTitle">All tools</h2><p id="sectionSubtitle">Your digital workspace, ready when you are.</p></div><div class="actions"><button class="btn" id="renameActive" title="Rename this category" style="display:none">✎ Rename</button><button class="btn" id="manageCategories">＋ Category</button></div></div><div class="grid" id="toolGrid"></div></main></div>
 <footer class="footer"><span>AI Project Hub · Free, open-source starter dashboard</span><span>Personal data stays in your browser · <a href="https://github.com/kamlajonota-sketch/AI-Project-Hub" target="_blank" rel="noopener noreferrer">View project on GitHub ↗</a></span></footer>
 </div>
 <div class="modal-backdrop" id="toolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Add a tool</h2><p class="sub">Add a website, AI assistant, GitHub project or your own link.</p><form id="toolForm"><input type="hidden" id="editId"><div class="form-grid"><div class="field"><label for="toolName">Name *</label><input id="toolName" required maxlength="70" placeholder="e.g. ChatGPT"></div><div class="field"><label for="toolIcon">Icon / emoji</label><input id="toolIcon" maxlength="8" placeholder="✦"></div><div class="field"><label for="toolCategory">Category *</label><select id="toolCategory" required></select></div><div class="field"><label for="toolUrl">Website URL *</label><input id="toolUrl" required type="url" placeholder="https://example.com"></div><div class="field full"><label for="toolDescription">Short description</label><textarea id="toolDescription" maxlength="220" placeholder="What do you use this tool for?"></textarea></div></div><div class="modal-actions"><button type="button" class="btn" id="cancelModal">Cancel</button><button class="btn primary" type="submit">Save tool</button></div></form></div></div>
-<div class="modal-backdrop" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryTitle"><div class="modal"><h2 id="categoryTitle">Manage categories</h2><p class="sub">Create a category for the tools you want to organize.</p><form id="categoryForm"><div class="field"><label for="categoryName">New category name</label><input id="categoryName" maxlength="40" placeholder="e.g. Research" required></div><div class="modal-actions"><button type="button" class="btn" id="cancelCategory">Close</button><button class="btn primary" type="submit">Add category</button></div></form><div id="customCategories" style="margin-top:18px"></div></div></div>
+<div class="modal-backdrop" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryTitle"><div class="modal"><h2 id="categoryTitle">Manage categories</h2><p class="sub">Create, rename or remove categories. Renaming also updates every tool in that category.</p><form id="categoryForm"><div class="field"><label for="categoryName">New category name</label><input id="categoryName" maxlength="40" placeholder="e.g. Research" required></div><div class="modal-actions"><button type="button" class="btn" id="cancelCategory">Close</button><button class="btn primary" type="submit">Add category</button></div></form><div id="customCategories" style="margin-top:18px"></div></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (function(){
@@ -58,23 +59,30 @@ const defaults=[
 {name:'MDN Web Docs',url:'https://developer.mozilla.org/',category:'Learning',icon:'📘',description:'Reference documentation for web technologies.'},
 {name:'freeCodeCamp',url:'https://www.freecodecamp.org/',category:'Learning',icon:'♧',description:'Learn coding through hands-on lessons and projects.'}
 ].map((x,i)=>({...x,id:'seed-'+i,favorite:['ChatGPT','GitHub','Google Gemini'].includes(x.name)}));
-let tools=defaults,customCategories=[],active='All',query='',sort='default',light=false;
+let tools=defaults,customCategories=[],hiddenCategories=[],aliasOf={},editingCat=null,active='All',query='',sort='default',light=false;
 const $=id=>document.getElementById(id);
-function safeLoad(){try{const s=localStorage.getItem(STORAGE);if(s){const d=JSON.parse(s);if(Array.isArray(d.tools))tools=d.tools;if(Array.isArray(d.categories))customCategories=d.categories;if(typeof d.light==='boolean')light=d.light;}}catch(e){console.warn('Saved dashboard data could not be read',e)}}
-function save(){try{localStorage.setItem(STORAGE,JSON.stringify({tools, categories:customCategories,light}));}catch(e){toast('Browser storage is full. Export a backup and remove some items.');}}
+function safeLoad(){try{const s=localStorage.getItem(STORAGE);if(s){const d=JSON.parse(s);if(Array.isArray(d.tools))tools=d.tools;if(Array.isArray(d.categories))customCategories=d.categories;if(Array.isArray(d.hidden))hiddenCategories=d.hidden;if(d.aliases&&typeof d.aliases==='object'&&!Array.isArray(d.aliases))aliasOf=d.aliases;if(typeof d.light==='boolean')light=d.light;}}catch(e){console.warn('Saved dashboard data could not be read',e)}}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify({tools,categories:customCategories,hidden:hiddenCategories,aliases:aliasOf,light}));}catch(e){toast('Browser storage is full. Export a backup and remove some items.');}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function categories(){return [...new Set([...['AI Assistants','AI & Models','Research','Developer Tools','GitHub Projects','Design & Media','Productivity','Learning'],...customCategories,...tools.map(t=>t.category).filter(Boolean)])].sort((a,b)=>a.localeCompare(b));}
+const BUILT_IN=['AI Assistants','AI & Models','Research','Developer Tools','GitHub Projects','Design & Media','Productivity','Learning'];
+const VIRTUAL=['AI Models','AI Systems'];
+function baseOf(c){return aliasOf[c]||c;}
+function isVirtual(c){return VIRTUAL.includes(baseOf(c));}
+const byName=(a,b)=>a.localeCompare(b);
+function categories(){return [...new Set([...BUILT_IN.filter(c=>!hiddenCategories.includes(c)),...customCategories.filter(c=>!isVirtual(c)),...tools.map(t=>t.category).filter(Boolean)])].sort(byName);}
+function navCategories(){return [...new Set([...categories(),...VIRTUAL.filter(v=>!hiddenCategories.includes(v)),...customCategories])].sort(byName);}
 function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2400);}
 function matchesCategory(t,c){
- if(c==='AI Systems') return ['AI Assistants'].includes(t.category);
- if(c==='AI Models') return ['AI & Models','AI Assistants'].includes(t.category) || /model|gemini|hugging face|huggingface|ai studio/i.test([t.name,t.description].join(' '));
+ const b=baseOf(c),tb=baseOf(t.category);
+ if(b==='AI Systems') return tb==='AI Assistants';
+ if(b==='AI Models') return ['AI & Models','AI Assistants'].includes(tb) || /model|gemini|hugging face|huggingface|ai studio/i.test([t.name,t.description].join(' '));
  return t.category===c;
 }
 function categoryCount(c){return tools.filter(t=>matchesCategory(t,c)).length;}
 function renderNav(){
  const nav=$('categoryNav');
- const builtIn=['AI Assistants','AI Models','AI Systems','AI & Models','Research','Developer Tools','GitHub Projects','Design & Media','Productivity','Learning'];
- const cats=[...new Set([...builtIn,...customCategories,...tools.map(t=>t.category).filter(Boolean)])].sort((a,b)=>a.localeCompare(b));
+ const cats=navCategories();
+ $('renameActive').style.display=(active==='All'||active==='Favorites')?'none':'';
  nav.innerHTML='<div class="side-title">Workspace</div><button type="button" class="nav '+(active==='All'?'active':'')+'" data-category="All">◈ All tools <span class="count">'+tools.length+'</span></button><button type="button" class="nav '+(active==='Favorites'?'active':'')+'" data-category="Favorites">☆ Favorites <span class="count">'+tools.filter(t=>t.favorite).length+'</span></button><div class="side-title">Categories</div>'+cats.map(c=>'<button type="button" class="nav '+(active===c?'active':'')+'" data-category="'+esc(c)+'">◦ '+esc(c)+' <span class="count">'+categoryCount(c)+'</span></button>').join('');
  // Bind the workspace menu directly every time its buttons are rebuilt.
  // This avoids relying on a document-level delegated handler for dynamically replaced navigation.
@@ -111,18 +119,63 @@ function act(action,id){
  else if(action==='delete'&&confirm('Delete “'+t.name+'” from this browser?')){tools=tools.filter(x=>x.id!==id);save();render();toast('Tool deleted.');}
 }
 function openTool(t){$('toolForm').reset();$('editId').value=t?.id||'';$('modalTitle').textContent=t?'Edit tool':'Add a tool';$('toolName').value=t?.name||'';$('toolIcon').value=t?.icon||'✦';$('toolUrl').value=t?.url||'';$('toolDescription').value=t?.description||'';fillCategorySelect(t?.category);$('toolModal').classList.add('show');$('toolName').focus();}
-function fillCategorySelect(selected){$('toolCategory').innerHTML=categories().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');if(selected&&!categories().includes(selected)){$('toolCategory').insertAdjacentHTML('beforeend','<option>'+esc(selected)+'</option>');}$('toolCategory').value=selected||'AI Assistants';}
+function fillCategorySelect(selected){$('toolCategory').innerHTML=categories().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');if(selected&&!categories().includes(selected)){$('toolCategory').insertAdjacentHTML('beforeend','<option>'+esc(selected)+'</option>');}if(selected)$('toolCategory').value=selected;}
 function closeTool(){$('toolModal').classList.remove('show');}
 $('addBtn').addEventListener('click',()=>openTool());$('cancelModal').addEventListener('click',closeTool);$('toolModal').addEventListener('click',e=>{if(e.target===$('toolModal'))closeTool();});
 $('toolForm').addEventListener('submit',e=>{e.preventDefault();let name=$('toolName').value.trim(),url=$('toolUrl').value.trim();try{const u=new URL(url);if(!['http:','https:'].includes(u.protocol))throw Error();url=u.href;}catch{toast('Please enter a valid http:// or https:// URL.');return;}const id=$('editId').value;const old=tools.find(t=>t.id===id);const entry={id:id||'custom-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name,icon:$('toolIcon').value.trim()||'✦',url,category:$('toolCategory').value,description:$('toolDescription').value.trim(),favorite:old?.favorite||false};if(old)tools=tools.map(t=>t.id===id?entry:t);else tools.unshift(entry);active='All';save();closeTool();render();toast(old?'Tool updated.':'Tool added to your hub.');});
 $('searchInput').addEventListener('input',e=>{query=e.target.value;render();});$('sortSelect').addEventListener('change',e=>{sort=e.target.value;render();});
 $('themeBtn').addEventListener('click',()=>{light=!light;save();render();toast(light?'Light appearance enabled.':'Dark appearance enabled.');});
-$('manageCategories').addEventListener('click',()=>{renderCustomCategories();$('categoryModal').classList.add('show');$('categoryName').focus();});$('cancelCategory').addEventListener('click',()=>$('categoryModal').classList.remove('show'));$('categoryModal').addEventListener('click',e=>{if(e.target===$('categoryModal'))$('categoryModal').classList.remove('show');});
+$('manageCategories').addEventListener('click',()=>{editingCat=null;renderCustomCategories();$('categoryModal').classList.add('show');$('categoryName').focus();});$('cancelCategory').addEventListener('click',closeCategory);$('categoryModal').addEventListener('click',e=>{if(e.target===$('categoryModal'))closeCategory();});
 $('categoryForm').addEventListener('submit',e=>{e.preventDefault();const name=$('categoryName').value.trim();if(!name)return;if(categories().some(c=>c.toLowerCase()===name.toLowerCase())){toast('That category already exists.');return;}customCategories.push(name);save();$('categoryName').value='';renderCustomCategories();render();toast('Category added.');});
-function renderCustomCategories(){$('customCategories').innerHTML='<div class="side-title">Custom categories</div>'+ (customCategories.length?customCategories.map(c=>'<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 2px;border-bottom:1px solid #28344a"><span>'+esc(c)+'</span><button class="mini" data-remove-category="'+esc(c)+'" title="Remove category">×</button></div>').join(''):'<p class="small-help">No custom categories yet. Built-in categories are always available.</p>');$('customCategories').querySelectorAll('[data-remove-category]').forEach(b=>b.addEventListener('click',()=>{const c=b.dataset.removeCategory;if(tools.some(t=>t.category===c)){toast('Move or delete tools in this category before removing it.');return;}customCategories=customCategories.filter(x=>x!==c);if(active===c)active='All';save();renderCustomCategories();render();}));}
-$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({app:'AI Project Hub',version:1,exportedAt:new Date().toISOString(),tools,categories:customCategories,light},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ai-project-hub-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup exported.');});
-$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.tools)||!d.tools.every(t=>t&&typeof t.name==='string'&&typeof t.url==='string'&&typeof t.category==='string'))throw Error('invalid');if(!confirm('Import '+d.tools.length+' tools? This replaces the tools saved in this browser. Export a backup first if needed.'))return;const clean=d.tools.map((t,i)=>{const u=new URL(t.url);if(!['http:','https:'].includes(u.protocol))throw Error('url');return {id:String(t.id||'import-'+Date.now()+'-'+i),name:t.name.slice(0,70),url:u.href,category:String(t.category||'Other').slice(0,40),icon:String(t.icon||'✦').slice(0,8),description:String(t.description||'').slice(0,220),favorite:!!t.favorite};});tools=clean;customCategories=Array.isArray(d.categories)?d.categories.filter(c=>typeof c==='string').slice(0,100):[];save();active='All';render();toast('Backup imported successfully.');}catch(err){toast('Could not import: please choose a valid AI Project Hub JSON backup.');}finally{e.target.value='';}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeTool();$('categoryModal').classList.remove('show');}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('searchInput').focus();}});
+function closeCategory(){editingCat=null;$('categoryModal').classList.remove('show');}
+function renderCustomCategories(){
+ const rows=navCategories().map(c=>{
+  if(editingCat===c)return '<div class="cat-row"><input id="catEditInput" class="cat-input" maxlength="40" value="'+esc(c)+'" aria-label="Category name"><button type="button" class="btn primary cat-btn" data-save-cat="'+esc(c)+'">Save</button><button type="button" class="btn cat-btn" data-cancel-cat="1">Cancel</button></div>';
+  const removable=customCategories.includes(c);
+  return '<div class="cat-row"><span class="cat-name">'+esc(c)+'</span><span class="cat-count">'+categoryCount(c)+'</span><button type="button" class="mini" data-edit-cat="'+esc(c)+'" title="Rename category" aria-label="Rename '+esc(c)+'">✎</button>'+(removable?'<button type="button" class="mini" data-remove-category="'+esc(c)+'" title="Remove category" aria-label="Remove '+esc(c)+'">×</button>':'')+'</div>';
+ }).join('');
+ $('customCategories').innerHTML='<div class="side-title">All categories</div>'+rows;
+ const inp=$('catEditInput');if(inp){inp.focus();inp.select();}
+}
+function renameCategory(oldName,raw){
+ const name=String(raw||'').trim().slice(0,40);
+ if(!name){toast('Category name cannot be empty.');return false;}
+ if(name===oldName){editingCat=null;renderCustomCategories();return true;}
+ if(navCategories().some(c=>c!==oldName&&c.toLowerCase()===name.toLowerCase())){toast('A category with that name already exists.');return false;}
+ tools.forEach(t=>{if(t.category===oldName)t.category=name;});
+ const root=baseOf(oldName);
+ if(customCategories.includes(oldName)){customCategories=customCategories.map(c=>c===oldName?name:c);}
+ else{if(!hiddenCategories.includes(oldName))hiddenCategories.push(oldName);customCategories.push(name);}
+ hiddenCategories=hiddenCategories.filter(c=>c!==name);
+ delete aliasOf[oldName];
+ if(root!==name&&(BUILT_IN.includes(root)||VIRTUAL.includes(root)))aliasOf[name]=root;
+ if(active===oldName)active=name;
+ editingCat=null;save();renderCustomCategories();render();toast('Category renamed.');return true;
+}
+(function(){
+ const box=$('customCategories');
+ box.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!box.contains(b))return;
+  if(b.dataset.editCat!==undefined){editingCat=b.dataset.editCat;renderCustomCategories();}
+  else if(b.dataset.cancelCat!==undefined){editingCat=null;renderCustomCategories();}
+  else if(b.dataset.saveCat!==undefined){renameCategory(b.dataset.saveCat,$('catEditInput').value);}
+  else if(b.dataset.removeCategory!==undefined){
+   const c=b.dataset.removeCategory;
+   if(tools.some(t=>t.category===c)){toast('Move or delete tools in this category before removing it.');return;}
+   customCategories=customCategories.filter(x=>x!==c);delete aliasOf[c];if(active===c)active='All';
+   save();renderCustomCategories();render();toast('Category removed.');
+  }
+ });
+ box.addEventListener('keydown',e=>{
+  if(e.target.id!=='catEditInput')return;
+  if(e.key==='Enter'){e.preventDefault();renameCategory(editingCat,e.target.value);}
+  else if(e.key==='Escape'){e.stopPropagation();editingCat=null;renderCustomCategories();}
+ });
+ $('renameActive').addEventListener('click',()=>{if(active==='All'||active==='Favorites')return;editingCat=active;renderCustomCategories();$('categoryModal').classList.add('show');});
+})();
+$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({app:'AI Project Hub',version:1,exportedAt:new Date().toISOString(),tools,categories:customCategories,hidden:hiddenCategories,aliases:aliasOf,light},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ai-project-hub-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Backup exported.');});
+$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const d=JSON.parse(await f.text());if(!Array.isArray(d.tools)||!d.tools.every(t=>t&&typeof t.name==='string'&&typeof t.url==='string'&&typeof t.category==='string'))throw Error('invalid');if(!confirm('Import '+d.tools.length+' tools? This replaces the tools saved in this browser. Export a backup first if needed.'))return;const clean=d.tools.map((t,i)=>{const u=new URL(t.url);if(!['http:','https:'].includes(u.protocol))throw Error('url');return {id:String(t.id||'import-'+Date.now()+'-'+i),name:t.name.slice(0,70),url:u.href,category:String(t.category||'Other').slice(0,40),icon:String(t.icon||'✦').slice(0,8),description:String(t.description||'').slice(0,220),favorite:!!t.favorite};});tools=clean;customCategories=Array.isArray(d.categories)?d.categories.filter(c=>typeof c==='string').slice(0,100):[];hiddenCategories=Array.isArray(d.hidden)?d.hidden.filter(c=>typeof c==='string'):[];aliasOf=(d.aliases&&typeof d.aliases==='object'&&!Array.isArray(d.aliases))?d.aliases:{};save();active='All';render();toast('Backup imported successfully.');}catch(err){toast('Could not import: please choose a valid AI Project Hub JSON backup.');}finally{e.target.value='';}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeTool();closeCategory();}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('searchInput').focus();}});
 safeLoad();render();
 })();
 </script>
