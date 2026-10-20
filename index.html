@@ -81,9 +81,22 @@ function render(){
  grid.innerHTML=list.map(t=>'<article class="tool"><div class="tool-top"><div class="tool-icon">'+esc(t.icon||'✦')+'</div><div style="min-width:0"><h3>'+esc(t.name)+'</h3><div class="category">'+esc(t.category)+'</div></div></div><p>'+esc(t.description||'Your saved shortcut.')+'</p><div class="tool-bottom"><a class="open-link" href="'+esc(t.url)+'" target="_blank" rel="noopener noreferrer">Open website ↗</a><div class="tool-actions"><button class="mini '+(t.favorite?'favorite':'')+'" data-act="fav" data-id="'+esc(t.id)+'" title="Toggle favorite" aria-label="Toggle favorite">'+(t.favorite?'★':'☆')+'</button><button class="mini" data-act="edit" data-id="'+esc(t.id)+'" title="Edit tool" aria-label="Edit tool">✎</button><button class="mini" data-act="delete" data-id="'+esc(t.id)+'" title="Delete tool" aria-label="Delete tool">×</button></div></div></article>').join('');
  /* Card actions use delegated events below so rerendered cards always respond. */
 }
-$('categoryNav').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;active=b.dataset.category;render();});
-$('toolGrid').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;act(b.dataset.act,b.dataset.id);});
-function act(action,id){const t=tools.find(x=>x.id===id);if(!t)return;if(action==='fav'){t.favorite=!t.favorite;save();render();}else if(action==='edit')openTool(t);else if(action==='delete'){if(confirm('Delete “'+t.name+'” from this browser?')){tools=tools.filter(x=>x.id!==id);save();render();toast('Tool deleted.');}}}
+document.addEventListener('click',e=>{
+ const categoryButton=e.target.closest('#categoryNav [data-category]');
+ if(categoryButton){e.preventDefault();active=categoryButton.dataset.category||'All';render();return;}
+ const actionButton=e.target.closest('#toolGrid [data-act]');
+ if(actionButton){e.preventDefault();e.stopPropagation();act(actionButton.dataset.act,actionButton.dataset.id);}
+},true);
+function act(action,id){
+ const t=tools.find(x=>x.id===id);if(!t)return;
+ if(action==='fav'){
+  t.favorite=!t.favorite;
+  const cardButton=Array.from(document.querySelectorAll('#toolGrid [data-act="fav"]')).find(b=>b.dataset.id===id);
+  if(cardButton){cardButton.textContent=t.favorite?'★':'☆';cardButton.classList.toggle('favorite',t.favorite);cardButton.setAttribute('aria-pressed',String(t.favorite));cardButton.title=t.favorite?'Remove from favorites':'Add to favorites';}
+  save();render();toast(t.favorite?'Added to favorites.':'Removed from favorites.');
+ }else if(action==='edit')openTool(t);
+ else if(action==='delete'&&confirm('Delete “'+t.name+'” from this browser?')){tools=tools.filter(x=>x.id!==id);save();render();toast('Tool deleted.');}
+}
 function openTool(t){$('toolForm').reset();$('editId').value=t?.id||'';$('modalTitle').textContent=t?'Edit tool':'Add a tool';$('toolName').value=t?.name||'';$('toolIcon').value=t?.icon||'✦';$('toolUrl').value=t?.url||'';$('toolDescription').value=t?.description||'';fillCategorySelect(t?.category);$('toolModal').classList.add('show');$('toolName').focus();}
 function fillCategorySelect(selected){$('toolCategory').innerHTML=categories().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');if(selected&&!categories().includes(selected)){$('toolCategory').insertAdjacentHTML('beforeend','<option>'+esc(selected)+'</option>');}$('toolCategory').value=selected||'AI Assistants';}
 function closeTool(){$('toolModal').classList.remove('show');}
