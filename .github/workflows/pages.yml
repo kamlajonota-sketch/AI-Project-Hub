@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate-and-deploy:
@@ -33,9 +33,9 @@ jobs:
           from pathlib import Path
           import re
           html = Path("index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script\\s*>", html, flags=re.I | re.S)
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script\s*>", html, flags=re.I | re.S)
           assert scripts, "No inline JavaScript found"
-          Path("/tmp/ai-project-hub-check.js").write_text("\\n".join(scripts), encoding="utf-8")
+          Path("/tmp/ai-project-hub-check.js").write_text("\n".join(scripts), encoding="utf-8")
           assert "<!doctype html>" in html.lower(), "Missing HTML doctype"
           for token in ('id="toolGrid"', 'id="addBtn"', 'id="exportBtn"', 'id="importBtn"'):
               assert token in html, f"Missing required UI element: {token}"
